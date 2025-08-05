@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>デイリーチェックイン</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 15px 30px rgba(132, 132, 132, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            border: 1px solid rgba(132, 132, 132, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .header {
+            background: linear-gradient(to right, #fff, #484444);
+            color: #ffffff;
+            margin: -40px -40px 30px -40px;
+            padding: 30px 40px;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(132, 132, 132, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 66.67%;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at 50% 100%, black 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.4) 50%, transparent 70%);
+            background-size: 8px 4px;
+            background-position: top right;
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 1;
+            mask: radial-gradient(circle at top right, black 0%, black 60%, transparent 100%);
+            -webkit-mask: radial-gradient(circle at top right, black 0%, black 60%, transparent 100%);
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .title-sub {
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 8px;
+            letter-spacing: -0.2px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+
+        .subtitle-en {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 400;
+            margin-top: 4px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .points-display {
+            background: #FCF7F8;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(252, 247, 248, 0.2);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25), 0 6px 15px rgba(132, 132, 132, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transform: translateY(-3px);
+        }
+
+        .points-display:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 10px 25px rgba(132, 132, 132, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .points-label {
+            font-size: 14px;
+            color: #000000;
+            margin-bottom: 5px;
+        }
+
+        .points-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .checkin-button {
+            background: #FCF7F8;
+            color: #000000;
+            border: none;
+            border-radius: 12px;
+            padding: 18px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(132, 132, 132, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(132, 132, 132, 0.2);
+            letter-spacing: -0.2px;
+            transform: translateY(-2px);
+        }
+
+        .checkin-button:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25), 0 8px 24px rgba(132, 132, 132, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            background: #FCF7F8;
+            color: #000000;
+        }
+
+        .checkin-button:active {
+            transform: translateY(-3px);
+            transition: transform 0.1s ease;
+        }
+
+        .checkin-button.checked {
+            background: #FCF7F8;
+            color: #000000;
+            cursor: not-allowed;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2), 0 6px 15px rgba(132, 132, 132, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tasks-section {
+            margin-top: 30px;
+            padding: 24px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid rgba(132, 132, 132, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(132, 132, 132, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .tasks-title {
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(45deg, #fff, #484444, #fff, #484444, #fff);
+            background-size: 300% 300%;
+            animation: gradient-shimmer 3s ease-in-out infinite;
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: -0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes gradient-shimmer {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px;
+            margin-bottom: 16px;
+            background: #FCF7F8;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(132, 132, 132, 0.08);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(132, 132, 132, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
+        .task-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(132, 132, 132, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border-color: rgba(132, 132, 132, 0.2);
+        }
+
+        .task-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .task-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .task-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #858489;
+            border-radius: 50%;
+            padding: 8px;
+            width: 40px;
+            height: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(132, 132, 132, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .task-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2D046E;
+            margin-bottom: 4px;
+            letter-spacing: -0.1px;
+        }
+
+        .task-reward {
+            font-size: 13px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .task-status {
+            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            background: #e4a3a5;
+            color: white;
+            min-width: 70px;
+            text-align: center;
+            letter-spacing: -0.1px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(228, 163, 165, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .task-item.completed .task-status {
+            background: #848484;
+            color: #000000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(132, 132, 132, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .task-item.completed {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .task-item.completed:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+
+
+        /* 星のキラキラエフェクト */
+        .star {
+            position: fixed;
+            width: 16px;
+            height: 16px;
+            font-size: 16px;
+            animation: star-burst 4s ease-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+            font-weight: bold;
+        }
+
+        .star.color-1 { 
+            color: #FFB6C1;
+            text-shadow: 0 0 10px rgba(255, 182, 193, 0.9);
+        }
+        .star.color-2 { 
+            color: #87CEEB;
+            text-shadow: 0 0 10px rgba(135, 206, 235, 0.9);
+        }
+        .star.color-3 { 
+            color: #DDA0DD;
+            text-shadow: 0 0 10px rgba(221, 160, 221, 0.9);
+        }
+        .star.color-4 { 
+            color: #98FB98;
+            text-shadow: 0 0 10px rgba(152, 251, 152, 0.9);
+        }
+        .star.color-5 { 
+            color: #F0E68C;
+            text-shadow: 0 0 10px rgba(240, 230, 140, 0.9);
+        }
+        .star.color-6 { 
+            color: #FFA07A;
+            text-shadow: 0 0 10px rgba(255, 160, 122, 0.9);
+        }
+
+        @keyframes star-burst {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                transform: translate(-50%, -50%) scale(1.3) rotate(90deg);
+                opacity: 1;
+            }
+            30% {
+                transform: translate(-50%, -50%) scale(1.1) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(0.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .success-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000000;
+            color: #FCF7F8;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            animation: success-popup 2s ease-out;
+            pointer-events: none;
+            z-index: 1000;
+            border: 1px solid rgba(132, 132, 132, 0.2);
+            box-shadow: 0 10px 30px rgba(132, 132, 132, 0.4);
+        }
+
+        @keyframes success-popup {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .header {
+                margin: -30px -20px 24px -20px;
+                padding: 24px 20px;
+            }
+            
+            .title {
+                font-size: 28px;
+            }
+            
+            .points-value {
+                font-size: 32px;
+            }
+            
+            .checkin-button {
+                padding: 16px 28px;
+                font-size: 15px;
+            }
+
+            .task-item {
+                padding: 16px;
+            }
+
+            .tasks-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">NERO Chain</h1>
+            <div class="title-sub">デイリーポイント</div>
+        </div>
+
+        <div class="points-display">
+            <div class="points-label">累計ポイント</div>
+            <div class="points-value" id="pointsValue">0</div>
+        </div>
+
+        <button class="checkin-button" id="checkinButton" onclick="dailyCheckin()">
+            <span id="buttonText">今日のチェックイン (+1pt)</span>
+        </button>
+
+        <div class="tasks-section">
+            <div class="tasks-title">限定ミッション</div>
+            <div class="task-item" id="task1" onclick="completeTask('task1', 'https://x.com/Nerochain_io')">
+                <div class="task-content">
+                    <div class="task-icon" style="background: linear-gradient(45deg, #6a8aff 0%, #b2fbff 100%); color: #FCF7F8;">𝕏</div>
+                    <div class="task-info">
+                        <div class="task-name">NERO Chain公式Xフォロー</div>
+                        <div class="task-reward">+5pt</div>
+                    </div>
+                </div>
+                <div class="task-status" id="status1">未完了</div>
+            </div>
+            <div class="task-item" id="task2" onclick="completeTask('task2', 'https://x.com/NEROCHAIN_JP')">
+                <div class="task-content">
+                    <div class="task-icon" style="background: linear-gradient(45deg, #6a8aff 0%, #b2fbff 100%); color: #FCF7F8;">𝕏</div>
+                    <div class="task-info">
+                        <div class="task-name">NERO ChainJP公式Xフォロー</div>
+                        <div class="task-reward">+5pt</div>
+                    </div>
+                </div>
+                <div class="task-status" id="status2">未完了</div>
+            </div>
+            <div class="task-item" id="task3" onclick="completeTask('task3', 'https://line.me/R/ti/p/@904zaqog')">
+                <div class="task-content">
+                    <div class="task-icon" style="background: #00B900; color: #FFFFFF; font-size: 10px; font-weight: bold;">LINE</div>
+                    <div class="task-info">
+                        <div class="task-name">オープンチャット参加</div>
+                        <div class="task-reward">+10pt</div>
+                    </div>
+                </div>
+                <div class="task-status" id="status3">未完了</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ローカルストレージからデータを取得
+        function getStoredData() {
+            const data = localStorage.getItem('dailyCheckinData');
+            if (data) {
+                return JSON.parse(data);
+            }
+            return {
+                points: 0,
+                lastCheckin: null,
+                completedTasks: []
+            };
+        }
+
+        // データを保存
+        function saveData(data) {
+            localStorage.setItem('dailyCheckinData', JSON.stringify(data));
+        }
+
+        // 今日の日付を取得
+        function getTodayString() {
+            return new Date().toDateString();
+        }
+
+
+
+        // 星のキラキラエフェクト
+        function createStarBurst(centerX, centerY) {
+            const colors = ['color-1', 'color-2', 'color-3', 'color-4', 'color-5', 'color-6'];
+            
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const star = document.createElement('div');
+                    star.className = 'star ' + colors[Math.floor(Math.random() * colors.length)];
+                    star.textContent = '★';
+                    
+                    // 中心点を設定
+                    star.style.left = centerX + 'px';
+                    star.style.top = centerY + 'px';
+                    
+                    // より広範囲に円陣で広がる設定
+                    const angle = (Math.PI * 2 * i) / 60 + Math.random() * 0.3;
+                    const distance = 150 + Math.random() * 250;
+                    const dx = Math.cos(angle) * distance;
+                    const dy = Math.sin(angle) * distance;
+                    
+                    star.style.setProperty('--dx', dx + 'px');
+                    star.style.setProperty('--dy', dy + 'px');
+                    
+                    // アニメーション遅延をランダムに設定
+                    star.style.animationDelay = Math.random() * 0.4 + 's';
+                    
+                    document.body.appendChild(star);
+                    
+                    setTimeout(() => {
+                        star.remove();
+                    }, 5000);
+                }, i * 30);
+            }
+        }
+
+        // 成功メッセージを表示
+        function showSuccessMessage() {
+            const message = document.createElement('div');
+            message.className = 'success-message';
+            message.textContent = '✨ +1ポイント獲得！';
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 2000);
+        }
+
+        // デイリーチェックイン実行
+        function dailyCheckin() {
+            const data = getStoredData();
+            const today = getTodayString();
+            
+            // 今日既にチェックイン済みかチェック
+            if (data.lastCheckin === today) {
+                return;
+            }
+            
+            // ポイント追加
+            data.points += 1;
+            data.lastCheckin = today;
+            
+            // データ保存
+            saveData(data);
+            
+            // UI更新
+            updateUI();
+            
+            // ボタンを無効化
+            const button = document.getElementById('checkinButton');
+            
+            // エフェクト実行
+            const buttonRect = button.getBoundingClientRect();
+            const centerX = buttonRect.left + buttonRect.width / 2;
+            const centerY = buttonRect.top + buttonRect.height / 2;
+            createStarBurst(centerX, centerY);
+            showSuccessMessage();
+            button.classList.add('checked');
+            button.innerHTML = '<span>✨ 今日はチェックイン済み</span>';
+        }
+
+        // タスク完了処理
+        function completeTask(taskId, url) {
+            const data = getStoredData();
+            
+            // 既に完了済みかチェック
+            if (data.completedTasks.includes(taskId)) {
+                return;
+            }
+            
+            // 外部リンクを開く
+            window.open(url, '_blank');
+            
+            // ポイント追加
+            let points = 0;
+            if (taskId === 'task1' || taskId === 'task2') {
+                points = 5;
+            } else if (taskId === 'task3') {
+                points = 10;
+            }
+            
+            data.points += points;
+            data.completedTasks.push(taskId);
+            
+            // データ保存
+            saveData(data);
+            
+            // UI更新
+            updateUI();
+            
+            // エフェクト実行
+            const taskRect = document.getElementById(taskId).getBoundingClientRect();
+            const centerX = taskRect.left + taskRect.width / 2;
+            const centerY = taskRect.top + taskRect.height / 2;
+            createStarBurst(centerX, centerY);
+            showTaskCompleteMessage(points);
+        }
+
+        // タスク完了メッセージを表示
+        function showTaskCompleteMessage(points) {
+            const message = document.createElement('div');
+            message.className = 'success-message';
+            message.textContent = `✨ +${points}ポイント獲得！`;
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 2000);
+        }
+
+        // UIを更新
+        function updateUI() {
+            const data = getStoredData();
+            const today = getTodayString();
+            
+            // ポイント表示更新
+            document.getElementById('pointsValue').textContent = data.points;
+            
+            // ボタン状態更新
+            const button = document.getElementById('checkinButton');
+            if (data.lastCheckin === today) {
+                button.classList.add('checked');
+                button.innerHTML = '<span>✨ 今日はチェックイン済み</span>';
+            }
+            
+            // タスク状態更新
+            for (let i = 1; i <= 3; i++) {
+                const taskId = `task${i}`;
+                const taskElement = document.getElementById(taskId);
+                const statusElement = document.getElementById(`status${i}`);
+                
+                if (data.completedTasks.includes(taskId)) {
+                    taskElement.classList.add('completed');
+                    statusElement.textContent = '完了';
+                }
+            }
+        }
+
+
+
+        // 初期化
+        function init() {
+            updateUI();
+        }
+
+        // ページ読み込み時に初期化
+        window.addEventListener('load', init);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96a4f8f59496685f',t:'MTc1NDM4MzA0Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
